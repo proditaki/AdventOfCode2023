@@ -49,7 +49,7 @@ def solve2():
          wincountDict[t]=wincount
 
     t = 0
-    while True and t < 14000000:
+    while True:
       if t >= len(toCheck):
         break
       if not toCheck[t] in wincountDict:
