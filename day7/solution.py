@@ -60,32 +60,46 @@ def solve2():
     input_file = os.path.join(os.getcwd(), input_filename)
     fHandle = open(input_file, 'r')
     lines = fHandle.readlines()
+    
     for line in lines:
         line = line.strip()
         cards, score = line.split(' ')
         score = int(score)
-#        print(cards, score)
-        if re.search(r'(.)\1{4}',cards) or re.search(r'^([^X])\1+X+$',"".join(sorted(cards.replace('J','X')))) or re.search(r'^[^X]X+$',"".join(sorted(cards.replace('J','X')))):
-            scores.append([7,cards.replace('A','E').replace('Q','C').replace('K','D').replace('T','A').replace('J','1'),score])
+        cardCount = {}
+        
+        for card in cards:
+            if card == 'J': continue
+            if card in cardCount:
+                cardCount[card] +=1
+            else:
+                cardCount[card] = 1
+        
+        cardScoreString = cards.replace('A','E').replace('Q','C').replace('K','D').replace('T','A').replace('J','1')        
+        if cardCount and 'J' in cards:
+            cards=cards.replace('J', max(cardCount, key=cardCount.get))
+
+        
+        if re.search(r'(.)\1{4}',cards):
+            scores.append([7,cardScoreString,score])
             #print('5', cards)
-        elif re.findall(r'(.)\1{3}',"".join(sorted(cards))) or re.search(r'^([^X])\1+[^X]X+$',"".join(sorted(cards.replace('J','X')))) or re.search(r'^[^X]([^X])\1+X+$',"".join(sorted(cards.replace('J','X')))) or re.search(r'^.*XXX$',"".join(sorted(cards.replace('J','X')))):
+        elif re.findall(r'(.)\1{3}',"".join(sorted(cards))):
             #print('4', cards)
-            scores.append([6,cards.replace('A','E').replace('Q','C').replace('K','D').replace('T','A').replace('J','1'),score])
-        elif re.search( r'(?=.*(.)\1{2})(?=.*(?!\1)(.)\2{1})',"".join(sorted(cards))) or re.search(r'^([^X])\1([^X])\2X$',"".join(sorted(cards.replace('J','X')))):
+            scores.append([6,cardScoreString,score])
+        elif re.search( r'(?=.*(.)\1{2})(?=.*(?!\1)(.)\2{1})',"".join(sorted(cards))):
             #print('fh', cards)
-            scores.append([5,cards.replace('A','E').replace('Q','C').replace('K','D').replace('T','A').replace('J','1'),score])
-        elif re.findall(r'(.)\1{2}',"".join(sorted(cards))) or re.search(r'.*([^X])\1+.*X+$',"".join(sorted(cards.replace('J','X')))) or re.search(r'^.*XX$',"".join(sorted(cards.replace('J','X')))):
+            scores.append([5,cardScoreString,score])
+        elif re.findall(r'(.)\1{2}',"".join(sorted(cards))):
             #print('3', cards)
-            scores.append([4,cards.replace('A','E').replace('Q','C').replace('K','D').replace('T','A').replace('J','1'),score])
+            scores.append([4,cardScoreString,score])
         elif re.search( r'(?=.*(.)\1{1})(?=.*(?!\1)(.)\2{1})',"".join(sorted(cards))):
-            scores.append([3,cards.replace('A','E').replace('Q','C').replace('K','D').replace('T','A').replace('J','1'),score])
+            scores.append([3,cardScoreString,score])
             #print('2p', cards)
-        elif re.findall(r'(.)\1{1}',"".join(sorted(cards))) or re.findall(r'.*X$',"".join(sorted(cards.replace('J','X')))):
+        elif re.findall(r'(.)\1{1}',"".join(sorted(cards))):
             #print('1p', cards)
-            scores.append([2,cards.replace('A','E').replace('Q','C').replace('K','D').replace('T','A').replace('J','1'),score])
+            scores.append([2,cardScoreString,score])
         else:
             #print('hc', cards)
-            scores.append([1,cards.replace('A','E').replace('Q','C').replace('K','D').replace('T','A').replace('J','1'),score])
+            scores.append([1,cardScoreString,score])
     i =1
     scores = sorted(scores)
     for index,cards,score in scores:
